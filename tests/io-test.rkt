@@ -30,6 +30,7 @@
 
     (test-case
       "#output-board: writes board as string to output port"
+      (display-sub-suite "output-board")
       (display-case "writes board as string to output port")
       (parameterize ([current-output-port output-buffer])
         (send test-io output-board "0" "1" "2")
@@ -37,6 +38,7 @@
 
     (test-case
       "#clear-screen: clears the screen and places cursor at top-left of screen"
+      (display-sub-suite "clear-screen")
       (display-case "clears the screen and places cursor at top-left of screen")
       (parameterize ([current-output-port output-buffer])
         (send test-io clear-screen)
