@@ -4,7 +4,7 @@ Classic Tic Tac Toe implemented in Racket Scheme as part of my resident apprenti
 
 ###Instructions
 
-#####download Racket Scheme:
+#####Download Racket Scheme:
 
 `$ brew install plt-racket`
 

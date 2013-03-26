@@ -17,8 +17,9 @@
     (define (minimax ply me my-token board)
       (for/list ([current-move (available-moves board)])
         (cond
+          ; optimization for first move if board is empty (selects random move)
           [(= 9 (length (available-moves board)))
-           (cons 1000 (car (shuffle (available-moves board))))]
+           (cons 0 (car (shuffle (available-moves board))))]
           [else
             (update board current-move my-token)
             (cond

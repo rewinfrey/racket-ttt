@@ -68,9 +68,9 @@
     (define (check-winner lst)
       (cond
         [(empty? lst) #f]
-        [(and (equal? (lookup-square (first (car lst)))
+        [(and (not (equal? #\space (lookup-square (third (car lst)))))
+              (equal? (lookup-square (first (car lst)))
                       (lookup-square (second (car lst))))
               (equal? (lookup-square (second (car lst)))
-                      (lookup-square (third (car lst))))
-              (not (equal? #\space (lookup-square (third (car lst)))))) (lookup-square (third (car lst)))]
+                      (lookup-square (third (car lst))))) (lookup-square (third (car lst)))]
         [else (check-winner (cdr lst))]))))
