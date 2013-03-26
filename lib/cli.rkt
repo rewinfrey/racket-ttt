@@ -1,6 +1,6 @@
 #lang racket
 (require racket/class)
-(require  "io.rkt" "player.rkt" "ai.rkt" "board.rkt" "game.rkt")
+(require  "io.rkt" "player.rkt" "human.rkt" "ai.rkt" "board.rkt" "game.rkt")
 (provide cli%)
 
 (define cli%
@@ -19,32 +19,29 @@
 
     (define/public (play game)
       (output-game game (move-prompt game))
+      (send game next-move)
       (cond
-        [(send game next-move)
-           (sleep 0.5)
-           (status-of game)]
-        [else
-           (send game move (get-move game))
-           (status-of game)])
-      (play-again?))
+        [(send game finished?)
+         (display-end-game game)
+         (if (play-again?)
+             (start)
+             (clear-screen))]
+        [else (play game)]))
 
-    (define/public (status-of game)
-      (if (send game finished?)
+;tested
+    (define/public (display-end-game game)
         (if (send game winner?)
           (output-game game (winner-prompt game))
-          (output-game game (draw-prompt)))
-        (play game)))
+          (output-game game (draw-prompt))))
 
+;tested
     (define/public (play-again?)
       (output "Would you like to play again? (y/n)")
       (let ([response (input)])
         (cond
-          [(or (equal? "y" response)
-               (equal? "Y" response))
-            (start)]
-          [else
-            (clear-screen)
-            (exit)])))
+          [(or (equal? "y" response) (equal? "Y" response))]
+          [(or (equal? "n" response) (equal? "N" response)) #f]
+          [else (play-again?)])))
 
 ;tested
     (define/public (get-square row-size)
@@ -85,13 +82,32 @@
       (menu)
       (validate-game-selection (input)))
 
+    (define/public (make-human token)
+      (new human% [in-token token] [in-move (human-move io)]))
+
+    (define/public (make-ai token)
+      (new ai% [in-token token]))
+
+    (define/public (human-move io)
+      (lambda (board)
+        (define (get-move board)
+          (send io output "Please enter your move:")
+          (let ([move (send io input)])
+            (cond
+              [(send board valid-move? move) move]
+              [else (send io output "\n")
+                    (send io output "I'm sorry, you've choosen an invalid square. Please choose a number from the possible moves board.")
+                    (send io output "\n")
+                    (get-move board)])))
+        (get-move board)))
+
 ;tested
     (define/public (make-players-pair-for selection)
       (cond
-        [(equal? selection "1") (cons (new player% [in-token #\x]) (new player% [in-token #\o]))]
-        [(equal? selection "2") (cons (new player% [in-token #\x]) (new ai% [in-token #\o]))]
-        [(equal? selection "3") (cons (new ai% [in-token #\x])     (new player% [in-token #\o]))]
-        [(equal? selection "4") (cons (new ai% [in-token #\x])     (new ai% [in-token #\o]))]))
+        [(equal? selection "1") (cons (make-human #\x) (make-human #\o))]
+        [(equal? selection "2") (cons (make-human #\x) (make-ai #\o))]
+        [(equal? selection "3") (cons (make-ai #\x)    (make-human #\o))]
+        [(equal? selection "4") (cons (make-ai #\x)    (make-ai #\o))]))
 
 ;tested
     (define/public (move-prompt game)
@@ -107,25 +123,6 @@
       (output "I'm sorry, I didn't understand your selection.")
       (blank-line)
       (output "Please choose game mode 1, 2, 3 or 4"))
-
-;tested
-    (define/public (move-error-prompt)
-      (blank-line)
-      (output "I'm sorry, you've choosen an invalid square. Please choose a number from the possible moves board.")
-      (blank-line))
-
-;tested
-    (define/public (valid-move? game move)
-      (send game valid-move? move))
-
-;tested
-    (define/public (get-move game)
-      (output "Please enter your move:")
-      (let ([move (input)])
-        (cond
-          [(valid-move? game move) move]
-          [else (move-error-prompt)
-                (get-move game)])))
 
 ;tested
     (define/public (winner-prompt game)

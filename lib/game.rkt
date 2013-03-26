@@ -22,19 +22,11 @@
     (define/public (move-num)
       (send gameboard count-moves))
 
-    (define/public (valid-move? move)
-      (send gameboard valid-move? move))
-
     (define/public (move user-move)
       (send gameboard update user-move (player-token)))
 
     (define/public (next-move)
-      (let ([current-player-move (send (current-player) best-move gameboard)])
-        (cond
-          [(equal? #f (not current-player-move))
-           (move current-player-move)
-           current-player-move]
-          [else #f])))
+      (move (send (current-player) get-move gameboard)))
 
     (define/public (get-help-board)
       (send gameboard get-help-board))

@@ -12,5 +12,5 @@
     (define/public (get-token)
       token)
 
-    (define/public (best-move gameboard)
-      #f)))
+    (define/public (get-move board)
+      void)))

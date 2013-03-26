@@ -8,26 +8,31 @@
 
     (inherit get-token)
 
-    (define/override (best-move board)
-      (let ([result (minimax 0 1 (get-token) board)])
+    (define/override (get-move board)
+      (let* ([result (minimax 0 1 (get-token) board)])
+        (sleep 0.5)
         (cdr (argmax car result))))
 
     ; private
 
     (define (minimax ply me my-token board)
       (for/list ([current-move (available-moves board)])
-        (update board current-move my-token)
         (cond
-          [(has-winner? board)
-             (undo board current-move)
-             (score-win ply me current-move)]
-          [(has-draw? board)
-             (undo board current-move)
-             (score-draw current-move)]
+          [(= 9 (length (available-moves board)))
+           (cons 1000 (car (shuffle (available-moves board))))]
           [else
-             (let ([scores (minimax (+ 1 ply) (- me) (opposite my-token) board)])
-               (undo board current-move)
-               (find-best-score-for scores current-move me))])))
+            (update board current-move my-token)
+            (cond
+              [(has-winner? board)
+                 (undo board current-move)
+                 (score-win ply me current-move)]
+              [(has-draw? board)
+                 (undo board current-move)
+                 (score-draw current-move)]
+              [else
+                 (let ([scores (minimax (+ 1 ply) (- me) (opposite my-token) board)])
+                   (undo board current-move)
+                   (find-best-score-for scores current-move me))])])))
 
     (define (available-moves board)
       (send board available-moves))

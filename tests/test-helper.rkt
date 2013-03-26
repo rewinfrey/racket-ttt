@@ -1,7 +1,7 @@
 #lang racket
-
 (require "../lib/io.rkt"
          "../lib/player.rkt"
+         "../lib/human.rkt"
          "../lib/ai.rkt"
          "../lib/board.rkt"
          "../lib/game.rkt"
@@ -9,10 +9,23 @@
 
 (provide (all-defined-out))
 
+(define (display-suite name)
+  (printf "~n~a~n" name))
+
+(define (display-sub-suite name)
+  (printf "~n   ~a~n" name))
+
+(define (display-case name)
+  (printf "     ~a~n" name))
+
+(define human-move
+  (lambda (board)
+    "1"))
+
 (define test-board  (new board%))
-(define test-ai     (new ai% [in-token #\x]))
 (define win-lst    '((0 1 2) (3 4 5) (6 7 8) (0 3 6) (1 4 7) (2 5 8) (0 4 8) (2 4 6)))
-(define test-player (new player% [in-token #\o]))
+(define test-ai     (new ai% [in-token #\x]))
+(define test-player (new human% [in-token #\o] [in-move human-move]))
 (define test-game   (new game% [in-player1 test-ai] [in-player2 test-player] [in-board test-board]))
 (define test-io     (new io%))
 (define test-cli    (new cli% [in-io test-io]))
@@ -178,4 +191,4 @@
                  (output-board-test row1 row2 row3)))
 
 (define play-again?-test
-  "Would you like to play again? (y\n)\n")
+  "Would you like to play again? (y/n)\n")
