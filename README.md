@@ -12,12 +12,14 @@ Warning: Downloading and making the library require about 40 min. Sorry!
 
 Checkout the repo:
 
-`$ git clone somewhere`
+`$ git clone git@github.com:rewinfrey/racket-ttt.git`
 
 Run the tests:
 
-`$ cd racket-ttt`
-`$ racket test.rkt`
+````
+$ cd racket-ttt
+$ racket test.rkt
+````
 
 Run the game:
 
