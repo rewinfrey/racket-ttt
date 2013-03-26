@@ -51,8 +51,7 @@
             [else #f]))
         result))
 
-    ;private functions
-
+    ;private
     (define (all-numeric? lst)
       (cond
         [(empty? lst) #t]

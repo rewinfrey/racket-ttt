@@ -9,23 +9,13 @@
 
 (provide (all-defined-out))
 
-(define (display-suite name)
-  (printf "~n~a~n" name))
-
-(define (display-sub-suite name)
-  (printf "~n   ~a~n" name))
-
-(define (display-case name)
-  (printf "     ~a~n" name))
-
-(define human-move
+(define mock-human-move
   (lambda (board)
     "1"))
 
 (define test-board  (new board%))
-(define win-lst    '((0 1 2) (3 4 5) (6 7 8) (0 3 6) (1 4 7) (2 5 8) (0 4 8) (2 4 6)))
 (define test-ai     (new ai% [in-token #\x]))
-(define test-player (new human% [in-token #\o] [in-move human-move]))
+(define test-player (new human% [in-token #\o] [in-move mock-human-move]))
 (define test-game   (new game% [in-player1 test-ai] [in-player2 test-player] [in-board test-board]))
 (define test-io     (new io%))
 (define test-cli    (new cli% [in-io test-io]))
@@ -33,23 +23,8 @@
 (define output-buffer
   (open-output-string))
 
-(define test-input-buffer
-  (open-input-string "test\n"))
-
 (define (reset port)
   (get-output-bytes port #t))
-
-(define (port-splitter port)
-  (let ([output (get-output-string port)])
-    (string-split output)))
-
-(define (contains? elem lst)
-  (cond
-    [(member elem lst) #t]
-    [else #f]))
-
-(define full-human-human-game-io
-  (open-input-string "1\n0\n1\n3\n4\n5\nn\n"))
 
 (define (to-block-board)
   (send test-board update "0" #\o)
@@ -90,55 +65,26 @@
   (for ([i '("0" "1" "2" "3" "4" "5" "6" "7" "8")])
     (send test-board update i #\space)))
 
-(define output-help-board
-  (string-append "\n"
-                 " 0 | 1 | 2 "
-                 "\n-----------\n"
-                 " 3 | 4 | 5 "
-                 "\n-----------\n"
-                 " 6 | 7 | 8 "
-                 "\n\n"))
+; prompts and output formatting functions
+(define clear-screen-test "\e[2J \e[0;0H")
 
-(define output-board
-  (string-append "\n"
-                 "   |   |   "
-                 "\n-----------\n"
-                 "   |   |   "
-                 "\n-----------\n"
-                 "   |   |   "
-                 "\n\n"))
+(define x-prompt-test "x to move:")
 
-(define menu
-  (string-append "\n"
-                 "Enter the number of the game mode you wish to play:\n"
-                 "1. Human vs. Human\n"
-                 "2. Human vs. Computer\n"
-                 "3. Computer vs. Human\n"
-                 "4. Computer vs. Computer\n"
-                 "\n"
-                 "Enter your selection: \n"))
+(define o-prompt-test "o to move:")
 
+(define blank-line-test "\n")
 
-(define clear-screen-test
-  "\e[2J \e[0;0H")
+(define draw-prompt-test "It's a draw!")
 
-(define x-prompt-test
-  "x to move:")
+(define winner-x-test "The winner is x!")
 
-(define o-prompt-test
-  "o to move:")
+(define winner-o-test "The winner is o!")
 
-(define blank-line-test
-  "\n")
+(define get-move-test "Please enter your move:\n")
 
-(define draw-prompt-test
-  "It's a draw!")
+(define play-again?-test "Would you like to play again? (y/n)\n")
 
-(define winner-x-test
-  "The winner is x!")
-
-(define winner-o-test
-  "The winner is o!")
+(define row-spacer-test "\n-----------\n")
 
 (define welcome-test
   (string-append blank-line-test
@@ -161,16 +107,10 @@
                  blank-line-test
                  "Enter your selection: \n"))
 
-(define get-move-test
-  "Please enter your move:\n")
-
 (define move-error-test
   (string-append blank-line-test
                  "I'm sorry, you've choosen an invalid square. Please choose a number from the possible moves board.\n"
                  blank-line-test))
-
-(define row-spacer-test
-  "\n-----------\n")
 
 (define (output-board-test row1 row2 row3)
   (string-append blank-line-test
@@ -190,5 +130,12 @@
                  blank-line-test
                  (output-board-test row1 row2 row3)))
 
-(define play-again?-test
-  "Would you like to play again? (y/n)\n")
+; test result utility functions
+(define (display-suite name)
+  (printf "~n~a~n" name))
+
+(define (display-sub-suite name)
+  (printf "~n   ~a~n" name))
+
+(define (display-case name)
+  (printf "     ~a~n" name))

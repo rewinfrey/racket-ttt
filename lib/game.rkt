@@ -42,7 +42,6 @@
           (draw?)))
 
     ;private
-
     (define (current-player)
      (if (= 0 (modulo (move-num) 2))
        player1

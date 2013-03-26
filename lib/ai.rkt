@@ -14,7 +14,6 @@
         (cdr (argmax car result))))
 
     ; private
-
     (define (minimax ply me my-token board)
       (for/list ([current-move (available-moves board)])
         (cond

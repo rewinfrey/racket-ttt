@@ -1,6 +1,11 @@
 #lang racket
-(require racket/class)
-(require  "io.rkt" "player.rkt" "human.rkt" "ai.rkt" "board.rkt" "game.rkt")
+(require racket/class
+         "io.rkt"
+         "player.rkt"
+         "human.rkt"
+         "ai.rkt"
+         "board.rkt"
+         "game.rkt")
 (provide cli%)
 
 (define cli%
@@ -28,13 +33,11 @@
              (clear-screen))]
         [else (play game)]))
 
-;tested
     (define/public (display-end-game game)
         (if (send game winner?)
           (output-game game (winner-prompt game))
           (output-game game (draw-prompt))))
 
-;tested
     (define/public (play-again?)
       (output "Would you like to play again? (y/n)")
       (let ([response (input)])
@@ -43,17 +46,14 @@
           [(or (equal? "n" response) (equal? "N" response)) #f]
           [else (play-again?)])))
 
-;tested
     (define/public (get-square row-size)
       (lambda (board index offset)
         (string-ref board (+ offset (* index row-size)))))
 
-;tested
     (define/public (welcome-prompt)
       (blank-line)
       (output "Welcome to Racket (Scheme) Tic Tac Toe!"))
 
-;tested
     (define/public (menu)
       (blank-line)
       (output "Enter the number of the game mode you wish to play:")
@@ -64,7 +64,6 @@
       (blank-line)
       (output "Enter your selection: "))
 
-;tested
     (define/public (validate-game-selection input)
       (cond
         [(equal? input "1") input]
@@ -74,10 +73,8 @@
         [else (error-selection)
               (game-selection)]))
 
-;tested
     (define/public (get-help-board game) (send game get-help-board))
 
-;tested
     (define/public (game-selection)
       (menu)
       (validate-game-selection (input)))
@@ -101,7 +98,6 @@
                     (get-move board)])))
         (get-move board)))
 
-;tested
     (define/public (make-players-pair-for selection)
       (cond
         [(equal? selection "1") (cons (make-human #\x) (make-human #\o))]
@@ -109,14 +105,12 @@
         [(equal? selection "3") (cons (make-ai #\x)    (make-human #\o))]
         [(equal? selection "4") (cons (make-ai #\x)    (make-ai #\o))]))
 
-;tested
     (define/public (move-prompt game)
       (let ([move-num (send game move-num)])
         (if (= 0 (modulo move-num 2))
           "x to move:"
           "o to move:")))
 
-;tested
     (define/public (error-selection)
       (clear-screen)
       (blank-line)
@@ -124,16 +118,15 @@
       (blank-line)
       (output "Please choose game mode 1, 2, 3 or 4"))
 
-;tested
     (define/public (winner-prompt game)
       (let ([winner (send game winner?)])
-      (~a "The winner is " winner "!")))
+      (if (equal? #\x winner)
+        "The winner is x!"
+        "The winner is o!")))
 
-;tested
     (define/public (draw-prompt)
       "It's a draw!")
 
-;tested
     (define/public (output-game game msg)
       (clear-screen)
       (output "Possible moves:")
@@ -145,7 +138,6 @@
     (define/public (output msg)
       (send io output msg))
 
-;tested
     (define/public (output-board board)
       (let ([row-size 3])
       (blank-line)
@@ -155,14 +147,11 @@
              (output "-----------")
              (blank-line)))))
 
-; tested
     (define/public (blank-line)
       (output ""))
 
-; tested
     (define/public (clear-screen)
       (send io clear-screen))
 
-; tested
     (define/public (input)
       (send io input))))

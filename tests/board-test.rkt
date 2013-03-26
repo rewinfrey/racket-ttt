@@ -2,7 +2,6 @@
 
 (require rackunit
          rackunit/text-ui
-         "../lib/board.rkt"
          "test-helper.rkt")
 
 (provide board-tests)

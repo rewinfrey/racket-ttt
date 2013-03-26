@@ -2,8 +2,7 @@
 
 (require rackunit
          rackunit/text-ui
-         "test-helper.rkt"
-         "../lib/player.rkt")
+         "test-helper.rkt")
 
 (provide player-tests)
 
